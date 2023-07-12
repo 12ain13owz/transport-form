@@ -1,0 +1,99 @@
+<div class="header">
+  All Order by Kerry
+  <a mat-raised-button color="primary" [routerLink]="['/fkerry']"
+    ><mat-icon>arrow_back</mat-icon></a
+  >
+</div>
+
+<div class="table-form">
+  <mat-form-field class="full-width">
+    <input
+      matInput
+      placeholder="ค้นหา"
+      (keyup)="applyFilter($event.target.value)"
+    />
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <mat-table [dataSource]="dataTable" matSort>
+    <ng-container matColumnDef="ts_date">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        วันที่
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        {{ row.ts_date | date: "dd/MM/yyyy" }}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="ts_no">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        ลำดับ
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row.ts_no }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="ts_mobile">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        เบอร์
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row.ts_mobile }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="ts_fullname">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        ชื่อ-สกุล
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row.ts_fullname }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="ts_address">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        ที่อยู่
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row.ts_address }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="ts_subdistrict">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        แขวง / ตำบล
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        {{ row.ts_subdistrict.replace("แขวง", "").replace("ตำบล", "") }}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="ts_district">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        เขต / อำเภอ
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        {{ row.ts_district.replace("เขต", "").replace("อำเภอ", "") }}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="ts_province">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        จังหวัด
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row.ts_province }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="ts_postcode">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        รหัสไปรษณีย์
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row.ts_postcode }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="ts_cod">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        COD
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row.ts_cod }} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"> </mat-row>
+  </mat-table>
+  <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"></mat-paginator>
+</div>

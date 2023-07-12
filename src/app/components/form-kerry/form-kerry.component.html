@@ -1,0 +1,315 @@
+<div class="container" style="margin-top: 10px;">
+  <div class="export-form">
+    <div class="col-1 header" style="text-align: left;">
+      {{ title }}
+    </div>
+
+    <div class="col-2" style="text-align: right;">
+      <button
+        *ngIf="!this.id"
+        type="button"
+        mat-raised-button
+        class="bt-forestgreen"
+        [class.spinner]="loadingBT.btExcel"
+        [disabled]="loadingBT.btExcel"
+        (click)="exportExcelFile()"
+      >
+        <mat-icon>file_copy</mat-icon>
+        Excel
+      </button>
+      <button
+        *ngIf="!this.id"
+        type="button"
+        mat-raised-button
+        class="bt-royalblue"
+        [class.spinner]="loadingBT.btWord"
+        [disabled]="loadingBT.btWord"
+        (click)="exportWordFile()"
+      >
+        <mat-icon>file_copy</mat-icon>
+        Word
+      </button>
+
+      <button
+        *ngIf="!this.id"
+        type="button"
+        mat-raised-button
+        class="bt-crimson"
+        (click)="openDialog()"
+      >
+        <mat-icon>assessment</mat-icon>
+        Report
+      </button>
+      <!-- <button *ngIf="!this.id" type="button" mat-raised-button color="warn">
+        <mat-icon>picture_as_pdf</mat-icon>
+      </button> -->
+      <a *ngIf="!this.id" mat-raised-button color="primary" routerLink="/akerry"
+        ><mat-icon>search</mat-icon>
+      </a>
+
+      <a
+        *ngIf="this.id"
+        mat-raised-button
+        color="primary"
+        [routerLink]="['/fkerry']"
+        ><mat-icon>arrow_back</mat-icon></a
+      >
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <form
+    [formGroup]="kerryForm"
+    [style.fontSize.px]="'15'"
+    (submit)="onSubmit()"
+    class="kerry-form"
+  >
+    <div class="full-width">
+      <mat-form-field class="row-width">
+        <mat-label>ร้าน</mat-label>
+        <mat-select
+          [(value)]="selected"
+          (selectionChange)="onShopChange()"
+          [disabled]="this.id"
+        >
+          <mat-option *ngFor="let shop of shops" [value]="shop.value">
+            {{ shop.viewValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button
+        *ngIf="!this.id"
+        type="button"
+        color="accent"
+        style="margin: 0; padding: 0px; min-width: 32px;"
+        mat-button
+        (click)="openShop()"
+      >
+        <mat-icon>post_add</mat-icon>
+      </button>
+    </div>
+
+    <mat-form-field class="row-width">
+      <input
+        matInput
+        [matDatepicker]="picker"
+        placeholder="วันที่จัดส่ง"
+        formControlName="sendDate"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="!this.id" class="row-width">
+      <input matInput placeholder="From" formControlName="from" />
+    </mat-form-field>
+
+    <mat-form-field *ngIf="!this.id" class="row-width">
+      <input matInput placeholder="To" formControlName="to" />
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <input
+        matInput
+        matInputAutofocus
+        placeholder="เบอร์โทรศัพท์"
+        formControlName="mobile"
+        (input)="NumberOnly(kerryForm.value.mobile, 'mobile')"
+        [errorStateMatcher]="errorMatcher"
+      />
+      <mat-icon matSuffix>stay_primary_portrait</mat-icon>
+      <mat-hint align="end"
+        >{{ kerryForm.value.mobile?.length || 0 }} / 10</mat-hint
+      >
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <input
+        matInput
+        placeholder="ชื่อ-สกุล"
+        formControlName="fullName"
+        [errorStateMatcher]="errorMatcher"
+      />
+      <mat-icon matSuffix>account_box</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <input
+        matInput
+        placeholder="ที่อยู่"
+        formControlName="address1"
+        [errorStateMatcher]="errorMatcher"
+      />
+      <mat-icon matSuffix>home</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <input
+        matInput
+        [matAutocomplete]="auto"
+        placeholder="ตำบล / อำเภอ / จังหวัด / รหัสไปรษณีย์"
+        formControlName="address2"
+        [errorStateMatcher]="errorMatcher"
+      />
+      <mat-icon matSuffix>home_work</mat-icon>
+      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+        <mat-option
+          *ngFor="let option of filteredOptions | async"
+          [value]="option"
+        >
+          <span [innerHTML]="option | highlight: fs.toHighlight"></span>
+          <span></span>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <input
+        matInput
+        placeholder="ยอดเก็บเงินปลายทาง (สูงสุด 50,000 บาท)"
+        formControlName="cod"
+        (input)="NumberOnly(kerryForm.value.cod, 'cod')"
+        [errorStateMatcher]="errorMatcher"
+      />
+      <mat-icon matSuffix>money</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <input matInput placeholder="หมายเหตุ" formControlName="remark" />
+      <mat-icon matSuffix>comment</mat-icon>
+    </mat-form-field>
+
+    <div class="text-center">
+      <button
+        type="submit"
+        class="bt-royalblue"
+        mat-raised-button
+        [class.spinner]="loadingBT.btSubmit"
+        [disabled]="loadingBT.btSubmit"
+      >
+        Submit
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="container">
+  <div *ngIf="!this.id" class="table-form">
+    <div class="row">
+      <div class="col-2">
+        <mat-form-field class="full-width">
+          <input
+            matInput
+            placeholder="ค้นหา"
+            (keyup)="applyFilter($event.target.value)"
+          />
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <div class="col-1 form-delivery">
+        <span class="text-delivery-ems">EMS: {{ ems }}</span>
+        /
+        <span class="text-delivery-cod">COD: {{ cod }}</span>
+      </div>
+    </div>
+
+    <mat-table
+      [dataSource]="dataTable"
+      matSort
+      matSortActive="ts_no"
+      matSortDirection="desc"
+    >
+      <ng-container matColumnDef="ts_no">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          ลำดับ
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.ts_no }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="recipient">
+        <mat-header-cell *matHeaderCellDef>
+          ชื่อผู้รับ
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{ row.ts_fullname }} ({{ row.ts_mobile }})
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="address1">
+        <mat-header-cell *matHeaderCellDef>
+          ที่อยู่
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{ row.ts_address }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="address2">
+        <mat-header-cell *matHeaderCellDef>
+          ตำบล / อำเภอ / จังหวัด / ไปรษณีย์
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{ row.ts_subdistrict.replace("แขวง", "").replace("ตำบล", "") }}
+          {{ row.ts_district.replace("เขต", "").replace("อำเภอ", "") }}
+          {{ row.ts_province }}
+          {{ row.ts_postcode }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="ts_cod">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="fix-column">
+          COD
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row" class="fix-column">
+          {{ row.ts_cod }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="edit">
+        <mat-header-cell *matHeaderCellDef class="fix-column">
+          แก้ไข
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row" class="fix-column">
+          <a
+            mat-icon-button
+            color="primary"
+            [routerLink]="['/fkerry', row.ts_id]"
+            ><mat-icon>edit</mat-icon></a
+          >
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="delete">
+        <mat-header-cell *matHeaderCellDef class="fix-column">
+          ลบ
+        </mat-header-cell>
+        <mat-cell *matCellDef="let row" class="fix-column">
+          <swal
+            #deleteSwal
+            title="ยืนยันการลบ {{ row.ts_mobile }}"
+            text="This cannot be undone"
+            icon="question"
+            [showCancelButton]="true"
+            [focusCancel]="true"
+            (confirm)="onDeleteOrder(row.ts_id, row.ts_mobile)"
+          >
+          </swal>
+          <button
+            type="button"
+            class="bt-del"
+            mat-icon-button
+            [swal]="deleteSwal"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"> </mat-row>
+    </mat-table>
+    <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"></mat-paginator>
+  </div>
+</div>

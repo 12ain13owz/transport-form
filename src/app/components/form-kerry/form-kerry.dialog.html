@@ -1,0 +1,44 @@
+<h1 mat-dialog-title>Report Excel</h1>
+<div mat-dialog-content>
+  <form [style.fontSize.px]="'15'" class="kerry-form">
+    <mat-form-field class="row-width">
+      <input
+        matInput
+        [matDatepicker]="picker1"
+        placeholder="วันที่เริ่มต้น"
+        [(ngModel)]="dateS"
+        name="dateS"
+        [disabled]="checked"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field class="row-width">
+      <input
+        matInput
+        [matDatepicker]="picker2"
+        placeholder="วันที่สิ้นสุด"
+        [(ngModel)]="dateE"
+        name="dateE"
+        [disabled]="checked"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+      <mat-datepicker #picker2></mat-datepicker>
+    </mat-form-field>
+
+    <mat-checkbox [(ngModel)]="checked" name="checked">ทั้งหมด</mat-checkbox>
+
+    <div class="text-center">
+      <button
+        type="button"
+        class="bt-royalblue"
+        mat-raised-button
+        (click)="exportReportFile()"
+        [disabled]="this.fs.loading"
+      >
+        Submit
+      </button>
+    </div>
+  </form>
+</div>
